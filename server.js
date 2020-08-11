@@ -15,9 +15,12 @@ app.use(express.json());
 
 app.use(express.static("public"));
 
-mongoose.connect("mongodb://localhost/budget", {
-  useNewUrlParser: true,
-  useFindAndModify: false
+let workoutDb = process.env.MONGODB_URI || "mongodb://localhost/budget";
+mongoose.connect(workoutDb, {useNewUrlParser: true, useFindAndModify: false})
+.then(()=>{
+	console.log("connected to mongo");
+}).catch((err) =>{
+	console.log(err);
 });
 
 // routes
