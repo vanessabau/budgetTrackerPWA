@@ -1,3 +1,4 @@
+//Handle database
 const indexedDB =
   window.indexedDB ||
   window.mozIndexedDB ||

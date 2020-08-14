@@ -1,6 +1,8 @@
+//Set up cache to use app off line
 var CACHE_NAME = "my-site-cache-v1";
 const DATA_CACHE_NAME = "data-cache-v1";
 ​
+//Specify files to cache
 var urlsToCache = [
   "/",
   "/db.js",
@@ -11,6 +13,7 @@ var urlsToCache = [
   "/icons/icon-512x512.png"
 ];
 ​
+//Install 
 self.addEventListener("install", function(event) {
   // Perform install steps
   event.waitUntil(
@@ -21,6 +24,7 @@ self.addEventListener("install", function(event) {
   );
 });
 ​
+//Fetch data
 self.addEventListener("fetch", function(event) {
   // cache all get requests to /api routes
   if (event.request.url.includes("/api/")) {
@@ -28,7 +32,7 @@ self.addEventListener("fetch", function(event) {
       caches.open(DATA_CACHE_NAME).then(cache => {
         return fetch(event.request)
           .then(response => {
-            // If the response was good, clone it and store it in the cache.
+            // Clone response and store it in the cache.
             if (response.status === 200) {
               cache.put(event.request.url, response.clone());
             }
@@ -45,13 +49,14 @@ self.addEventListener("fetch", function(event) {
     return;
   }
 ​
+//Handle responses
   event.respondWith(
     fetch(event.request).catch(function() {
       return caches.match(event.request).then(function(response) {
         if (response) {
           return response;
         } else if (event.request.headers.get("accept").includes("text/html")) {
-          // return the cached home page for all requests for html pages
+          // return cached home page for all html requests
           return caches.match("/");
         }
       });
